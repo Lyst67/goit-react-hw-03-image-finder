@@ -1,30 +1,18 @@
 import { Component } from "react";
 import  Searchbar  from "./Searchbar/Searchbar";
 import  ImageGallery  from "./ImageGallery/ImageGallery";
-// import { getImageBySearch } from "../api/api"
+import css from "./App.module.css"
 
 class App extends Component {
-  state = {
-    id: "", webformatURL: "", largeImageURL: "", searchQuery: "", error: ""
-  }
-
+  state = {searchQuery: "" }
+    
   handleSetSearchQuery = (value) => {
     this.setState({ searchQuery: value })
    }
-    
-    
-  
-  // fetchImages = async () => {
-  //   try {
-  //     const data = getImageBySearch(this.state.searchQuery)
-  //     this.setState({ gallery: data })
-  //     console.log(data)
-  //   } catch (error) { this.setState({error: error.response.data})}
-  // }
 
   render() {
      return (
-       <div>
+       <div className={css.app}>
          <Searchbar onSubmit={this.handleSetSearchQuery } />
          <ImageGallery query={this.state.searchQuery } />
     </div>
