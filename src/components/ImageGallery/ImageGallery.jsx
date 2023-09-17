@@ -7,31 +7,38 @@ import css from './ImageGallery.module.css'
 
 class ImageGallery extends Component {
     state = {
-    gallery:[], isLoading: false, error: null, page: 1
+    gallery:[], isLoading: false, error: null, page: 1, isButton: false
     }
     
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.query !== this.props.query) {
-            this.setState({ page: 1, gallery: [] })
-            if (this.state.page === 1) {
-                this.fetchImages()
-            }    
-        } else {
-           if (prevState.page !== this.state.page) {
-            this.fetchImages()
-        } 
+        if (this.props.query === "") {
+            alert("Fill in the field, please!")
+            return
         }
-    }
-    
+        if (prevProps.query !== this.props.query) {
+            this.setState({ page: 1, gallery: [] })      
+                this.fetchImages() 
+        } else {
+              if (prevState.page !== this.state.page)
+              { this.fetchImages() } 
+            }  
+        }
+        
     fetchImages = async () => {
         try {
              this.setState({ isLoading: true })
-            const {hits} = await getImageBySearch(this.props.query, this.state.page) 
-            if (hits.length === 0) {
+            const data = await getImageBySearch(this.props.query, this.state.page) 
+            if (data.hits.length === 0) {
+                console.log(data.hits.length)
               alert('Opps! There are no images for your request! Please try again!')
            return  
-            } else {
-              this.setState((prev) => ({ gallery: [...prev.gallery, ...hits]}))  
+            }
+            if (data.hits.length < 12 || data.total/12 < this.state.page) 
+             {
+                this.setState({isButton: false})
+            }
+            else {
+              this.setState((prev) => ({ gallery: [...prev.gallery, ...data.hits], isButton: true}))  
              }   
         } catch (error) { this.setState({ error: error.response.data })} 
         finally {
@@ -42,12 +49,11 @@ class ImageGallery extends Component {
     handleLoadMore = () => {
           this.setState(prevState => ({
       page: prevState.page + 1,
-    }))
-        
+    }))  
     }
 
     render() {
-        const { gallery, isLoading, error} = this.state
+        const { gallery, isLoading, error, isButton } = this.state
         return (
             <div > 
                 {error && <h1>{error}</h1>}
@@ -57,9 +63,8 @@ class ImageGallery extends Component {
                 < ImageGalleryItem image={image} key={image.id} />
             ))}
                 </ul>
-                {gallery.length > 0 && (<Button handleLoadMore={this.handleLoadMore} />)}  
-           </div>
-       
+                {isButton && (<Button handleLoadMore={this.handleLoadMore} />)}  
+           </div> 
     )  
     } 
 }
