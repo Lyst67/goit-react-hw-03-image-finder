@@ -7,7 +7,7 @@ class App extends Component {
   state = {searchQuery: "" }
     
   handleSetSearchQuery = (value) => {
-    this.setState({ searchQuery: value })
+    this.setState({ searchQuery: value.toLowerCase() })
    }
 
   render() {

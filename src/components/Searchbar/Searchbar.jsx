@@ -11,9 +11,10 @@ class Searchbar extends Component  {
     this.setState({value})
     }
 
-    handleSubmitSearch = (event) => {
+  handleSubmitSearch = (event) => {
         event.preventDefault()
-      this.props.onSubmit(this.state.value.toLowerCase())
+    this.props.onSubmit(this.state.value.toLowerCase().trim())
+   
 }
 
   render() {

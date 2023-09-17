@@ -10,20 +10,24 @@ class ImageGallery extends Component {
     gallery:[], isLoading: false, error: null, page: 1
     }
     
-    componentDidUpdate(prevProps, prevStates) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.query !== this.props.query) {
-            this.setState(({page: 1, gallery:[]}))
+            this.setState({ page: 1, gallery: [] })
+            if (this.state.page === 1) {
+                this.fetchImages()
+            }    
+        } else {
+           if (prevState.page !== this.state.page) {
             this.fetchImages()
+        } 
         }
-     
-     }
-        
+    }
     
     fetchImages = async () => {
         try {
              this.setState({ isLoading: true })
             const { hits } = await getImageBySearch(this.props.query, this.state.page) 
-            this.setState((prev) => ({ gallery: [...prev.gallery, ...hits], page: this.state.page + 1 }))
+            this.setState((prev) => ({ gallery: [...prev.gallery, ...hits]}))
         } catch (error) { this.setState({ error: error.response.data }) }
         finally {
             this.setState({ isLoading: false})
@@ -31,7 +35,10 @@ class ImageGallery extends Component {
     }
 
     handleLoadMore = () => {
-        this.fetchImages(this.props.query, this.state.page)
+          this.setState(prevState => ({
+      page: prevState.page + 1,
+    }))
+        
     }
 
     render() {
