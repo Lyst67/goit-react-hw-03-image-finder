@@ -26,9 +26,14 @@ class ImageGallery extends Component {
     fetchImages = async () => {
         try {
              this.setState({ isLoading: true })
-            const { hits } = await getImageBySearch(this.props.query, this.state.page) 
-            this.setState((prev) => ({ gallery: [...prev.gallery, ...hits]}))
-        } catch (error) { this.setState({ error: error.response.data }) }
+            const {hits} = await getImageBySearch(this.props.query, this.state.page) 
+            if (hits.length === 0) {
+              alert('Opps! There are no images for your request! Please try again!')
+           return  
+            } else {
+              this.setState((prev) => ({ gallery: [...prev.gallery, ...hits]}))  
+             }   
+        } catch (error) { this.setState({ error: error.response.data })} 
         finally {
             this.setState({ isLoading: false})
         }
