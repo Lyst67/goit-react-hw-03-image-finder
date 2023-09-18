@@ -16,12 +16,12 @@ class ImageGallery extends Component {
             return
         }
         if (prevProps.query !== this.props.query) {
-            this.setState({ page: 1, gallery: [] })      
-                this.fetchImages() 
+            this.setState({ page: 1, gallery: [] })
+            this.fetchImages()
         } else {
-              if (prevState.page !== this.state.page)
-              { this.fetchImages() } 
-            }  
+            if (prevState.page !== this.state.page && prevProps.query === this.props.query)
+            { this.fetchImages() }
+        }  
         }
         
     fetchImages = async () => {
@@ -29,17 +29,16 @@ class ImageGallery extends Component {
              this.setState({ isLoading: true })
             const data = await getImageBySearch(this.props.query, this.state.page) 
             if (data.hits.length === 0) {
-                console.log(data.hits.length)
               alert('Opps! There are no images for your request! Please try again!')
            return  
             }
-            if (data.hits.length < 12 || data.total/12 < this.state.page) 
-             {
-                this.setState({isButton: false})
-            }
-            else {
-              this.setState((prev) => ({ gallery: [...prev.gallery, ...data.hits], isButton: true}))  
-             }   
+
+            this.setState((prev) => ({ gallery: [...prev.gallery, ...data.hits], isButton: true })) 
+            
+            if ([...this.state.gallery, ...data.hits].length >= data.totalHits)
+             { this.setState({ isButton: false })
+                return
+            }   
         } catch (error) { this.setState({ error: error.response.data })} 
         finally {
             this.setState({ isLoading: false})
