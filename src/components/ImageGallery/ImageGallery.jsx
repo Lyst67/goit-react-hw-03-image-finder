@@ -17,9 +17,11 @@ class ImageGallery extends Component {
         }
         if (prevProps.query !== this.props.query) {
             this.setState({ page: 1, gallery: [] })
-            this.fetchImages()
+               if (this.state.page === 1) {
+        this.fetchImages();
+      }
         } else {
-            if (prevState.page !== this.state.page && prevProps.query === this.props.query)
+            if (prevState.page !== this.state.page)
             { this.fetchImages() }
         }  
         }

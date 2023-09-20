@@ -21,7 +21,7 @@ class Searchbar extends Component  {
       
  return (
             <header className={css.searchbar}>
-         <form className={css.form}
+         <form className={css.form} autoComplete="on"
              onSubmit={this.handleSubmitSearch }
          >
     <button type="submit" className={css.search_button}></button>
